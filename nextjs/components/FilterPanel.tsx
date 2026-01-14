@@ -98,7 +98,7 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, onClearFi
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[100] p-6 sm:p-4 animate-in fade-in duration-300">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[100] p-6 md:p-4 animate-in fade-in duration-300">
       <div 
         className="rounded-3xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden border transition-all duration-300"
         style={{ 
@@ -402,10 +402,10 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, onClearFi
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3" style={{ borderColor: 'var(--card-border)' }}>
+        <div className="px-6 py-4 border-t flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3" style={{ borderColor: 'var(--card-border)' }}>
           <button
             onClick={handleClear}
-            className="px-4 py-2.5 rounded-xl text-sm font-bold transition-colors border w-full sm:w-auto order-2 sm:order-1"
+            className="px-4 py-2.5 rounded-xl text-sm font-bold transition-colors border w-full md:w-auto order-2 md:order-1"
             style={{ 
               backgroundColor: 'var(--btn-bg)', 
               borderColor: 'var(--btn-border)',
@@ -414,10 +414,10 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, onClearFi
           >
             清除所有筛选
           </button>
-          <div className="flex items-center gap-3 w-full sm:w-auto order-1 sm:order-2">
+          <div className="flex items-center gap-3 w-full md:w-auto order-1 md:order-2">
             <button
               onClick={onClose}
-              className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-sm font-bold transition-colors border"
+              className="flex-1 md:flex-none px-5 py-2.5 rounded-xl text-sm font-bold transition-colors border"
               style={{ 
                 backgroundColor: 'var(--btn-bg)', 
                 borderColor: 'var(--btn-border)',
@@ -428,7 +428,7 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, onClearFi
             </button>
             <button
               onClick={handleApply}
-              className="flex-[2] sm:flex-none px-8 py-2.5 rounded-xl text-sm font-bold bg-blue-500 text-white hover:bg-blue-600 transition-all active:scale-95 shadow-lg shadow-blue-500/25"
+              className="flex-[2] md:flex-none px-8 py-2.5 rounded-xl text-sm font-bold bg-blue-500 text-white hover:bg-blue-600 transition-all active:scale-95 shadow-lg shadow-blue-500/25"
             >
               应用筛选
             </button>

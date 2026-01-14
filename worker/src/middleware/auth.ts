@@ -33,24 +33,28 @@ export async function authMiddleware(request: Request, env: Env): Promise<AuthRe
   }
 }
 
-export function handleCORS(): Response {
+export function handleCORS(request?: Request): Response {
+  const origin = request?.headers.get('Origin') || '*';
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400',
+      'Access-Control-Allow-Credentials': 'true',
     },
   });
 }
 
-export function jsonResponse(data: any, status: number = 200, headers: Record<string, string> = {}): Response {
+export function jsonResponse(data: any, status: number = 200, headers: Record<string, string> = {}, request?: Request): Response {
+  const origin = request?.headers.get('Origin') || '*';
   return Response.json(data, {
     status,
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Credentials': 'true',
       ...headers,
     },
   });

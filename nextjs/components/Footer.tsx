@@ -8,6 +8,16 @@ interface FooterProps {
 
 export default function Footer({ visitorCount }: FooterProps) {
   const [uptime, setUptime] = useState('');
+  const [displayCount, setDisplayCount] = useState<string | number>('...');
+
+  useEffect(() => {
+    console.log('Footer Props - visitorCount:', visitorCount);
+    if (visitorCount !== undefined) {
+      setDisplayCount(visitorCount);
+    } else {
+      setDisplayCount('0');
+    }
+  }, [visitorCount]);
 
   useEffect(() => {
     // 假设发布日期是 2026-01-14 12:00:00
@@ -30,13 +40,13 @@ export default function Footer({ visitorCount }: FooterProps) {
   }, []);
 
   return (
-    <footer className="w-full pt-12 pb-24 sm:pb-12 mt-12 border-t" style={{ borderColor: 'var(--card-border)' }}>
+    <footer className="w-full pt-12 pb-32 md:pb-16 mt-12 border-t relative z-10" style={{ borderColor: 'var(--card-border)' }}>
       <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4">
         <div className="flex items-center gap-3 py-1.5 px-6 rounded-full bg-white/5 backdrop-blur-sm border border-white/5 shadow-sm transition-all">
           <p className="text-[11px] font-medium opacity-50 dark:opacity-40 tracking-wider flex items-center gap-4" style={{ color: 'var(--foreground)' }}>
             <span className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-              总访问量 {typeof visitorCount === 'number' ? visitorCount.toLocaleString() : '--'} 次
+              总访问量 <span className="font-bold">{typeof displayCount === 'number' ? displayCount.toLocaleString() : displayCount}</span> 次
             </span>
             <span className="opacity-20 text-lg font-light">|</span>
             <span className="flex items-center gap-2">

@@ -90,7 +90,7 @@ export default function BirthdayStars({ onStarClick }: BirthdayStarsProps) {
         </div>
       </div>
 
-      <div className="relative -mx-6 px-6 lg:-mx-12 lg:px-12">
+      <div className="relative -mx-4 px-4 md:-mx-12 md:px-12">
         <div className="flex gap-5 overflow-x-auto no-scrollbar pb-6">
           {stars.map((star) => {
           const birthDate = new Date(star.birthday);

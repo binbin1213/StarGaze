@@ -14,9 +14,9 @@ import UploadModal from '@/components/UploadModal';
 import AdminLoginModal from '@/components/AdminLoginModal';
 import EditPhotoModal from '@/components/EditPhotoModal';
 import BottomNav from '@/components/BottomNav';
-import Footer from '@/components/Footer';
 import StarDetailModal from '@/components/StarDetailModal';
 import StarListModal from '@/components/StarListModal';
+import Footer from '@/components/Footer';
 import { photosApi } from '@/lib/api';
 import { getWorkerUrl } from '@/lib/config';
 
@@ -37,22 +37,25 @@ export default function PhotoGallery() {
   const settingsRef = useRef<HTMLDivElement>(null);
 
   // 使用 SWR 获取统计数据
-  const { data: stats } = useSWR(`${getWorkerUrl()}/api/stats`, fetcher, {
-    revalidateOnFocus: false,
-    dedupingInterval: 60000 // 1分钟内不重复请求
+  const { data: stats, error: statsError } = useSWR(`${getWorkerUrl()}/api/stats-live`, fetcher, {
+    revalidateOnFocus: false, // 切换窗口时不重新请求
+    revalidateOnMount: true,
+    refreshInterval: 300000,  // 延长到 5 分钟刷新一次
+    dedupingInterval: 60000   // 1 分钟内只允许发一个请求到后端
   });
 
-  // 记录访问量
   useEffect(() => {
-    const hasVisited = sessionStorage.getItem('has_visited');
-    if (!hasVisited) {
-      fetch(`${getWorkerUrl()}/api/stats/visit`, { method: 'POST' })
-        .then(() => {
-          sessionStorage.setItem('has_visited', 'true');
-        })
-        .catch(console.error);
+    // 仅在开发环境打印，减少干扰
+    if (process.env.NODE_ENV === 'development') {
+      console.log('API URL:', `${getWorkerUrl()}/api/stats-live`);
     }
-  }, []);
+    if (stats) {
+      console.log('Stats fetched successfully (Version:', stats.version, '):', stats);
+    }
+    if (statsError) {
+      console.error('Error fetching stats:', statsError);
+    }
+  }, [stats, statsError]);
 
   useEffect(() => {
     setMounted(true);
@@ -85,6 +88,18 @@ export default function PhotoGallery() {
       if (now - parseInt(loginTime) < 24 * 60 * 60 * 1000) {
         setIsAdmin(true);
       }
+    }
+  }, []);
+
+  // 记录访问量
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('has_visited');
+    if (!hasVisited) {
+      fetch(`${getWorkerUrl()}/api/stats/visit`, { method: 'POST' })
+        .then(() => {
+          sessionStorage.setItem('has_visited', 'true');
+        })
+        .catch(console.error);
     }
   }, []);
 
@@ -122,17 +137,24 @@ export default function PhotoGallery() {
   const handleBatchUpload = async (files: File[]) => {
     if (files.length === 0) return;
 
+    // 单个文件走原有逻辑，或者也可以统一走批量接口（后端已支持）
+    // 为了兼容性，如果是单文件，可以保留旧逻辑，也可以统一。
+    // 这里统一使用批量接口，但需要注意参数构造
+    
     const formData = new FormData();
     if (files.length === 1) {
+       // 兼容旧接口，使用 file 字段
        formData.append('file', files[0]);
        await photosApi.upload(formData);
     } else {
+       // 新接口，使用 photos 字段
        files.forEach(file => {
          formData.append('photos', file);
        });
        await photosApi.batchUpload(formData);
     }
     
+    // 刷新列表
     window.location.reload();
   };
 
@@ -140,6 +162,8 @@ export default function PhotoGallery() {
     try {
       await photosApi.update(id, data);
       setEditingPhoto(null);
+      // 触发 InfinitePhotoGrid 刷新会比较复杂，这里简单重载页面
+      // 理想情况下应该通过 context 或 event bus 通知列表更新
       window.location.reload();
     } catch (error: any) {
       alert(error.response?.data?.error || '更新失败');
@@ -326,7 +350,7 @@ export default function PhotoGallery() {
         </div>
       </header>
 
-      <main className="flex-grow max-w-[1400px] mx-auto px-6 pt-36 sm:pt-28 pb-12">
+      <main className="flex-grow max-w-[1400px] mx-auto px-6 pt-36 sm:pt-28 pb-24 w-full">
         {/* 移动端数据面板 - 视觉优化 */}
         <div className="sm:hidden mb-4 px-2">
           <StatsPanel 
@@ -349,14 +373,20 @@ export default function PhotoGallery() {
           }) && (
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                {/* 已选标签展示区 */}
                 <div className="flex items-center gap-2">
                   {Object.entries(filters).map(([key, value]) => {
                     if (!value || key === 'search') return null;
+                    
+                    // 过滤掉空数组
                     if (Array.isArray(value) && value.length === 0) return null;
+                    
+                    // 过滤掉默认的范围对象 {min: null, max: null}
                     if (typeof value === 'object' && !Array.isArray(value)) {
                       if ((value as any).min === null && (value as any).max === null) return null;
                     }
 
+                    // 格式化显示内容
                     let displayValue = '';
                     if (Array.isArray(value)) {
                       displayValue = value.join(', ');
@@ -397,8 +427,6 @@ export default function PhotoGallery() {
           />
         </div>
       </main>
-
-      <Footer visitorCount={stats?.visitorCount} />
 
       {/* 各类弹窗 */}
       {showFilterPanel && (
@@ -471,6 +499,8 @@ export default function PhotoGallery() {
         onUploadClick={() => isAdmin ? setShowUploadModal(true) : setShowLoginModal(true)}
         onAdminClick={() => isAdmin ? setShowBatchEdit(true) : setShowLoginModal(true)}
       />
+
+      <Footer visitorCount={stats?.visitorCount} />
 
       {/* 侧边悬浮功能区 */}
       <div className="floating-side-nav">

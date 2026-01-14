@@ -13,7 +13,7 @@ export default {
     const path = url.pathname;
 
     if (request.method === 'OPTIONS') {
-      return handleCORS();
+      return handleCORS(request);
     }
 
     try {
@@ -33,7 +33,7 @@ export default {
         return handleCommentById(request, env);
       }
       
-      if (path === '/api/stats' || path === '/api/stats/visit') {
+      if (path.startsWith('/api/stats')) {
         const { handleStats } = await import('./handlers/stats');
         return handleStats(request, env);
       }
