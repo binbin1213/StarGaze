@@ -14,6 +14,7 @@ import UploadModal from '@/components/UploadModal';
 import AdminLoginModal from '@/components/AdminLoginModal';
 import EditPhotoModal from '@/components/EditPhotoModal';
 import BottomNav from '@/components/BottomNav';
+import Footer from '@/components/Footer';
 import StarDetailModal from '@/components/StarDetailModal';
 import StarListModal from '@/components/StarListModal';
 import { photosApi } from '@/lib/api';
@@ -121,24 +122,17 @@ export default function PhotoGallery() {
   const handleBatchUpload = async (files: File[]) => {
     if (files.length === 0) return;
 
-    // 单个文件走原有逻辑，或者也可以统一走批量接口（后端已支持）
-    // 为了兼容性，如果是单文件，可以保留旧逻辑，也可以统一。
-    // 这里统一使用批量接口，但需要注意参数构造
-    
     const formData = new FormData();
     if (files.length === 1) {
-       // 兼容旧接口，使用 file 字段
        formData.append('file', files[0]);
        await photosApi.upload(formData);
     } else {
-       // 新接口，使用 photos 字段
        files.forEach(file => {
          formData.append('photos', file);
        });
        await photosApi.batchUpload(formData);
     }
     
-    // 刷新列表
     window.location.reload();
   };
 
@@ -146,8 +140,6 @@ export default function PhotoGallery() {
     try {
       await photosApi.update(id, data);
       setEditingPhoto(null);
-      // 触发 InfinitePhotoGrid 刷新会比较复杂，这里简单重载页面
-      // 理想情况下应该通过 context 或 event bus 通知列表更新
       window.location.reload();
     } catch (error: any) {
       alert(error.response?.data?.error || '更新失败');
@@ -165,7 +157,7 @@ export default function PhotoGallery() {
   };
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
+    <div className="min-h-screen relative flex flex-col" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
       {/* 氛围背景装饰 */}
       <div className="ambient-bg">
         <div className="bubble bubble-1"></div>
@@ -218,6 +210,7 @@ export default function PhotoGallery() {
                   totalStars={stats?.totalStars}
                   totalSchools={stats?.totalSchools}
                   averageAge={stats?.averageAge}
+                  newThisMonth={stats?.newThisMonth}
                   variant="minimalist"
                 />
               </div>
@@ -333,13 +326,14 @@ export default function PhotoGallery() {
         </div>
       </header>
 
-      <main className="max-w-[1400px] mx-auto px-6 pt-36 sm:pt-28 pb-24">
+      <main className="flex-grow max-w-[1400px] mx-auto px-6 pt-36 sm:pt-28 pb-12">
         {/* 移动端数据面板 - 视觉优化 */}
         <div className="sm:hidden mb-4 px-2">
           <StatsPanel 
             totalStars={stats?.totalStars}
             totalSchools={stats?.totalSchools}
             averageAge={stats?.averageAge}
+            newThisMonth={stats?.newThisMonth}
             variant="minimalist"
           />
         </div>
@@ -355,20 +349,14 @@ export default function PhotoGallery() {
           }) && (
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-                {/* 已选标签展示区 */}
                 <div className="flex items-center gap-2">
                   {Object.entries(filters).map(([key, value]) => {
                     if (!value || key === 'search') return null;
-                    
-                    // 过滤掉空数组
                     if (Array.isArray(value) && value.length === 0) return null;
-                    
-                    // 过滤掉默认的范围对象 {min: null, max: null}
                     if (typeof value === 'object' && !Array.isArray(value)) {
                       if ((value as any).min === null && (value as any).max === null) return null;
                     }
 
-                    // 格式化显示内容
                     let displayValue = '';
                     if (Array.isArray(value)) {
                       displayValue = value.join(', ');
@@ -409,6 +397,8 @@ export default function PhotoGallery() {
           />
         </div>
       </main>
+
+      <Footer visitorCount={stats?.visitorCount} />
 
       {/* 各类弹窗 */}
       {showFilterPanel && (
@@ -476,7 +466,6 @@ export default function PhotoGallery() {
 
       <BottomNav 
         isAdmin={isAdmin}
-        visitorCount={stats?.visitorCount}
         onFilterClick={() => setShowFilterPanel(true)}
         onStarsClick={() => setShowStarsModal(true)}
         onUploadClick={() => isAdmin ? setShowUploadModal(true) : setShowLoginModal(true)}
