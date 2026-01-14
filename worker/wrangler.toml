@@ -1,0 +1,26 @@
+name = "stargaze-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "photo-gallery-db"
+database_id = "7d0cd29a-91d4-476e-87b7-eb803ee2a0fa"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "photo-gallery-photos"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "232eefd33f304fa8a0fb9a2bbe99f76f"
+
+[vars]
+JWT_SECRET = "62ac177be425e5f8669f071e11eca4d2de1c9ee33ab88b2090d5cebd7df643bd"
+R2_PUBLIC_URL = "https://r2.binbino.cn"
+WORKER_URL = "https://api.binbino.cn"
+
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+fallthrough = true

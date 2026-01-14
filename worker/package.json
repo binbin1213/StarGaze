@@ -1,0 +1,24 @@
+{
+  "name": "photo-gallery-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker API for Photo Gallery",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@jsquash/jpeg": "^1.6.0",
+    "@jsquash/png": "^3.1.1",
+    "@jsquash/resize": "^2.1.1",
+    "bcryptjs": "^2.4.3",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "@types/node": "^25.0.6",
+    "typescript": "^5.3.3",
+    "wrangler": "^4.58.0"
+  }
+}
