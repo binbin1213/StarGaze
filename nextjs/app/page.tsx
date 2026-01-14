@@ -372,7 +372,7 @@ export default function PhotoGallery() {
             return true;
           }) && (
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+              <div className="flex items-center gap-2 overflow-x-auto hover-scrollbar py-1">
                 {/* 已选标签展示区 */}
                 <div className="flex items-center gap-2">
                   {Object.entries(filters).map(([key, value]) => {

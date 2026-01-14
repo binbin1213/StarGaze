@@ -79,7 +79,7 @@ export default function StatsPanel({
   ];
 
   return (
-    <div className="flex overflow-x-auto no-scrollbar gap-8 py-2 md:grid md:grid-cols-4 md:gap-4">
+    <div className="flex overflow-x-auto hover-scrollbar gap-8 py-2 md:grid md:grid-cols-4 md:gap-4">
       {stats.map((item, index) => (
         <div key={index} className="flex-shrink-0 flex items-center gap-3 group">
           <div className={`p-2 rounded-xl transition-all duration-500 group-hover:scale-110 ${item.color} bg-opacity-10`}>

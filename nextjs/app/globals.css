@@ -199,3 +199,60 @@ body {
   margin-top: 2px;
   opacity: 0.8;
 }
+
+/* 隐藏滚动条但保持滚动功能 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 悬浮显示滚动条的特殊容器 */
+.hover-scrollbar {
+  scrollbar-width: none; /* Firefox 默认隐藏 */
+  -ms-overflow-style: none; /* IE 默认隐藏 */
+}
+
+.hover-scrollbar::-webkit-scrollbar {
+  height: 6px; /* 横向滚动条高度 */
+  display: none; /* Chrome/Safari 默认隐藏 */
+}
+
+.hover-scrollbar:hover {
+  scrollbar-width: auto; /* Firefox 悬浮显示 */
+  -ms-overflow-style: auto;
+}
+
+.hover-scrollbar:hover::-webkit-scrollbar {
+  display: block; /* Chrome/Safari 悬浮显示 */
+}
+
+/* 美化滚动条样式 */
+.hover-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hover-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3); /* gray-400 with opacity */
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.hover-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+  background-clip: content-box;
+}
+
+/* 针对深色模式的滚动条样式 */
+[data-theme='dark'] .hover-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.4); /* gray-600 */
+  background-clip: content-box;
+}
+
+[data-theme='dark'] .hover-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(75, 85, 99, 0.9);
+  background-clip: content-box;
+}
