@@ -28,6 +28,7 @@ export default function StarDetailModal({ starId, onClose, isAdmin }: StarDetail
   // 滚动显示按钮逻辑
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
+  // Trigger deployment
   const handleScroll = () => {
     setIsScrolling(true);
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
