@@ -4,6 +4,13 @@ import { jsonResponse } from '../middleware/auth';
 export async function handleStats(request: Request, env: Env): Promise<Response> {
   const method = request.method;
 
+  if (method === 'POST' && new URL(request.url).pathname === '/api/stats/visit') {
+    // 增加访问量
+    await env.DB.prepare('UPDATE site_stats SET value = value + 1, updated_at = CURRENT_TIMESTAMP WHERE key = "visitor_count"').run();
+    const visitorCount = await env.DB.prepare('SELECT value FROM site_stats WHERE key = "visitor_count"').first<{ value: number }>();
+    return jsonResponse({ visitorCount: visitorCount?.value || 0 });
+  }
+
   if (method === 'GET') {
     // 1. 总照片数
     const photosCount = await env.DB.prepare('SELECT COUNT(*) as total FROM photos').first<{ total: number }>();
@@ -34,14 +41,18 @@ export async function handleStats(request: Request, env: Env): Promise<Response>
     const monthStartStr = firstDayOfMonth.toISOString().slice(0, 19).replace('T', ' '); // 匹配 SQLite 格式
     const newThisMonth = await env.DB.prepare('SELECT COUNT(*) as total FROM photos WHERE created_at >= ?').bind(monthStartStr).first<{ total: number }>();
 
+    // 6. 获取总访问量
+    const visitorCount = await env.DB.prepare('SELECT value FROM site_stats WHERE key = "visitor_count"').first<{ value: number }>();
+
     return jsonResponse({
       totalPhotos: photosCount?.total || 0,
       totalStars: starsCount?.total || 0,
       totalSchools: schoolsCount?.total || 0,
       averageAge: avgAgeResult?.averageAge || 0,
-      newThisMonth: newThisMonth?.total || 0
+      newThisMonth: newThisMonth?.total || 0,
+      visitorCount: visitorCount?.value || 0
     }, 200, {
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': 'public, max-age=60' // 统计数据更新频率较高，缓存时间缩短
     });
   }
 

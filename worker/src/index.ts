@@ -33,7 +33,7 @@ export default {
         return handleCommentById(request, env);
       }
       
-      if (path === '/api/stats') {
+      if (path === '/api/stats' || path === '/api/stats/visit') {
         const { handleStats } = await import('./handlers/stats');
         return handleStats(request, env);
       }

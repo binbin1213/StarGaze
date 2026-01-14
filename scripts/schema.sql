@@ -72,3 +72,11 @@ CREATE TABLE backups (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
+
+CREATE TABLE site_stats (
+  key TEXT PRIMARY KEY,
+  value INTEGER DEFAULT 0,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO site_stats (key, value) VALUES ('visitor_count', 0);

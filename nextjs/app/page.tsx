@@ -41,6 +41,18 @@ export default function PhotoGallery() {
     dedupingInterval: 60000 // 1分钟内不重复请求
   });
 
+  // 记录访问量
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('has_visited');
+    if (!hasVisited) {
+      fetch(`${getWorkerUrl()}/api/stats/visit`, { method: 'POST' })
+        .then(() => {
+          sessionStorage.setItem('has_visited', 'true');
+        })
+        .catch(console.error);
+    }
+  }, []);
+
   useEffect(() => {
     setMounted(true);
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'soft' | null;
@@ -464,6 +476,7 @@ export default function PhotoGallery() {
 
       <BottomNav 
         isAdmin={isAdmin}
+        visitorCount={stats?.visitorCount}
         onFilterClick={() => setShowFilterPanel(true)}
         onStarsClick={() => setShowStarsModal(true)}
         onUploadClick={() => isAdmin ? setShowUploadModal(true) : setShowLoginModal(true)}

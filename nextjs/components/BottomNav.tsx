@@ -9,10 +9,32 @@ interface BottomNavProps {
   onUploadClick: () => void;
   onStarsClick: () => void;
   isAdmin: boolean;
+  visitorCount?: number;
 }
 
-export default function BottomNav({ onFilterClick, onAdminClick, onUploadClick, onStarsClick, isAdmin }: BottomNavProps) {
+export default function BottomNav({ onFilterClick, onAdminClick, onUploadClick, onStarsClick, isAdmin, visitorCount }: BottomNavProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [uptime, setUptime] = useState('');
+
+  useEffect(() => {
+    // 假设发布日期是 2026-01-14 12:00:00
+    const launchDate = new Date('2026-01-14T12:00:00');
+    
+    const updateUptime = () => {
+      const now = new Date();
+      const diff = now.getTime() - launchDate.getTime();
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      setUptime(`${days}天 ${hours}小时 ${minutes}分`);
+    };
+
+    updateUptime();
+    const timer = setInterval(updateUptime, 60000); // 每分钟更新一次
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,6 +116,15 @@ export default function BottomNav({ onFilterClick, onAdminClick, onUploadClick, 
           </div>
           <span className="text-[10px] font-bold opacity-30 group-hover:opacity-80" style={{ color: 'var(--foreground)' }}>{isAdmin ? '管理' : '我的'}</span>
         </button>
+      </div>
+
+      {/* 站点统计信息 */}
+      <div className="mt-4 mb-2 text-center pointer-events-auto">
+        <p className="text-[10px] font-medium opacity-40 dark:opacity-30 tracking-wider flex items-center justify-center gap-2" style={{ color: 'var(--foreground)' }}>
+          <span>👁️ 总访问量 {visitorCount?.toLocaleString() || '--'} 次</span>
+          <span className="opacity-20">|</span>
+          <span>🕒 已运行 {uptime}</span>
+        </p>
       </div>
     </div>
   );
