@@ -199,8 +199,8 @@ export default function StarDetailModal({ starId, onClose, isAdmin }: StarDetail
     
     setDownloading(true);
     try {
-      // 这里的延时是为了确保图片已经完全渲染
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // 减少等待时间，仅留给 React 状态更新一点缓冲
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       const element = cardRef.current;
       
@@ -218,15 +218,61 @@ export default function StarDetailModal({ starId, onClose, isAdmin }: StarDetail
       // 临时修改样式以展开所有内容进行截图
       element.style.maxHeight = 'none';
       element.style.overflowY = 'visible';
+
+      // 预处理图片：将跨域图片转换为 Base64，避免 html-to-image 内部请求导致的跨域问题和重复下载
+      const images = element.querySelectorAll('img');
+      const originalSrcs = new Map<HTMLImageElement, string>();
+      const originalSrcSets = new Map<HTMLImageElement, string>();
+      
+      await Promise.all(Array.from(images).map(async (img) => {
+        try {
+          const src = img.src;
+          // 仅处理同源或已配置跨域的图片
+          if (src && !src.startsWith('data:')) {
+            originalSrcs.set(img, src);
+            if (img.srcset) {
+              originalSrcSets.set(img, img.srcset);
+              img.removeAttribute('srcset'); // 暂时移除 srcset 避免干扰
+            }
+            
+            // 尝试获取图片数据并转换为 Base64
+            // 使用 cache: 'force-cache' 利用浏览器缓存
+            const response = await fetch(src, { 
+              mode: 'cors',
+              cache: 'force-cache'
+            });
+            const blob = await response.blob();
+            const base64 = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            });
+            
+            img.src = base64;
+          }
+        } catch (err) {
+          console.warn('Failed to convert image to base64:', err);
+          // 失败时保持原样，让 toPng 尝试处理
+        }
+      }));
       
       const dataUrl = await toPng(element, {
-        cacheBust: true,
+        cacheBust: false, // 禁用 cacheBust，利用浏览器缓存
         backgroundColor: '#ffffff',
-        pixelRatio: 2,
+        pixelRatio: 2, // 保持清晰度
         style: {
           borderRadius: '0',
           margin: '0',
         }
+      });
+      
+      // 恢复图片 src
+      originalSrcs.forEach((src, img) => {
+        img.src = src;
+      });
+      originalSrcSets.forEach((srcset, img) => {
+        img.setAttribute('srcset', srcset);
       });
       
       // 恢复原始样式
