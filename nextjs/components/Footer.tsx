@@ -55,13 +55,8 @@ export default function Footer({ visitorCount }: FooterProps) {
           </p>
         </div>
         
-        <div className="flex flex-col items-center gap-2">
-          <div className="text-[10px] opacity-30 font-medium tracking-widest uppercase" style={{ color: 'var(--foreground)' }}>
-            © 2026 StarGaze • Thai Stars Gallery
-          </div>
-          <div className="text-[9px] opacity-20 font-medium tracking-tight" style={{ color: 'var(--foreground)' }}>
-            Released under the <span className="font-bold">MIT License</span>
-          </div>
+        <div className="text-[10px] opacity-30 font-medium tracking-widest uppercase" style={{ color: 'var(--foreground)' }}>
+          © 2026 StarGaze • Thai Stars Gallery
         </div>
       </div>
     </footer>
