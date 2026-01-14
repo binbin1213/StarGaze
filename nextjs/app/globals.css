@@ -216,43 +216,44 @@ body {
 }
 
 .hover-scrollbar::-webkit-scrollbar {
-  height: 6px; /* 横向滚动条高度 */
-  display: none; /* Chrome/Safari 默认隐藏 */
+  height: 8px; /* 增加高度，更容易选中 */
+  display: none;
 }
 
 .hover-scrollbar:hover {
-  scrollbar-width: auto; /* Firefox 悬浮显示 */
+  scrollbar-width: auto;
   -ms-overflow-style: auto;
 }
 
 .hover-scrollbar:hover::-webkit-scrollbar {
-  display: block; /* Chrome/Safari 悬浮显示 */
+  display: block;
 }
 
 /* 美化滚动条样式 */
 .hover-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.03); /* 淡淡的轨道背景，更有边界感 */
+  border-radius: 10px;
 }
 
 .hover-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.3); /* gray-400 with opacity */
+  background: rgba(100, 116, 139, 0.4); /* 更明显的颜色 slate-500 */
   border-radius: 10px;
-  border: 2px solid transparent;
+  border: 1px solid transparent; /* 减少间隙 */
   background-clip: content-box;
 }
 
 .hover-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.8);
+  background: rgba(100, 116, 139, 0.8);
   background-clip: content-box;
 }
 
 /* 针对深色模式的滚动条样式 */
 [data-theme='dark'] .hover-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(75, 85, 99, 0.4); /* gray-600 */
+  background: rgba(148, 163, 184, 0.5); /* slate-400 */
   background-clip: content-box;
 }
 
 [data-theme='dark'] .hover-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(75, 85, 99, 0.9);
+  background: rgba(148, 163, 184, 0.9);
   background-clip: content-box;
 }
