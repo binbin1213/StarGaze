@@ -105,6 +105,7 @@ export default function InfinitePhotoGrid({
 
   useEffect(() => {
     loadPhotos(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, sortBy, sortOrder, filters]);
 
   const handleLoadMore = useCallback(() => {

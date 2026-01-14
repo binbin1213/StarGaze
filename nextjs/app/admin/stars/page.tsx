@@ -229,6 +229,7 @@ export default function StarsPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-4">
                     {star.avatar && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={star.avatar}
                         alt={star.name}

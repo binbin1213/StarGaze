@@ -268,6 +268,7 @@ export default function BatchEditModal({ isOpen, onClose }: BatchEditModalProps)
                     <tr key={photo.id} className="hover:bg-white/5 transition-colors group">
                       <td className="p-3">
                         <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-800 border border-gray-700 shadow-sm group-hover:border-blue-500/50 transition-colors">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img 
                             src={photo.thumbnailUrl} 
                             alt="" 

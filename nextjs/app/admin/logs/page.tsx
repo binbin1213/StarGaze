@@ -41,6 +41,7 @@ export default function LogsPage() {
       return;
     }
     fetchLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, isLoading, page, actionFilter]);
 
   const fetchLogs = async () => {
