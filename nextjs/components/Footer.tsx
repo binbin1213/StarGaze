@@ -59,24 +59,8 @@ export default function Footer({ visitorCount }: FooterProps) {
           <div className="text-[10px] opacity-30 font-medium tracking-widest uppercase" style={{ color: 'var(--foreground)' }}>
             © 2026 StarGaze • Thai Stars Gallery
           </div>
-          <div className="flex items-center gap-2 text-[9px] opacity-20 font-medium tracking-tight" style={{ color: 'var(--foreground)' }}>
-            <a 
-              href="https://github.com/binbin1213/StarGaze/blob/main/LICENSE" 
-              target="_blank" 
-              rel="noreferrer"
-              className="hover:opacity-100 transition-opacity underline decoration-dotted underline-offset-2"
-            >
-              MIT License
-            </a>
-            <span>•</span>
-            <a 
-              href="https://github.com/binbin1213/StarGaze" 
-              target="_blank" 
-              rel="noreferrer"
-              className="hover:opacity-100 transition-opacity"
-            >
-              Open Source on GitHub
-            </a>
+          <div className="text-[9px] opacity-20 font-medium tracking-tight" style={{ color: 'var(--foreground)' }}>
+            Released under the <span className="font-bold">MIT License</span>
           </div>
         </div>
       </div>
