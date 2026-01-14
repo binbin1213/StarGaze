@@ -49,16 +49,17 @@ export default function BottomNav({ onFilterClick, onAdminClick, onUploadClick, 
   };
 
   return (
-    <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 px-10 pb-2 pt-12 pointer-events-none">
-      {/* 底部渐变遮罩，进一步减淡 */}
-      <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/5 via-black/[0.02] to-transparent dark:from-black/30 dark:via-black/5 dark:to-transparent -z-10" />
-      
-      <div 
-        className="backdrop-blur-md border rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.08)] flex items-center justify-around px-2 h-13 pointer-events-auto transition-all duration-300 bg-white/25 dark:bg-black/20"
-        style={{ 
-          borderColor: 'var(--card-border)',
-        }}
-      >
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col items-center">
+      <div className="w-full px-10 pb-2 pt-12 pointer-events-none relative">
+        {/* 底部渐变遮罩 */}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/5 via-black/[0.02] to-transparent dark:from-black/30 dark:via-black/5 dark:to-transparent -z-10" />
+        
+        <div 
+          className="backdrop-blur-md border rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.08)] flex items-center justify-around px-2 h-13 pointer-events-auto transition-all duration-300 bg-white/25 dark:bg-black/20"
+          style={{ 
+            borderColor: 'var(--card-border)',
+          }}
+        >
         <button 
           onClick={scrollToTop}
           className="flex-1 flex flex-col items-center justify-center h-full group transition-all active:scale-90"
@@ -117,15 +118,16 @@ export default function BottomNav({ onFilterClick, onAdminClick, onUploadClick, 
           <span className="text-[10px] font-bold opacity-30 group-hover:opacity-80" style={{ color: 'var(--foreground)' }}>{isAdmin ? '管理' : '我的'}</span>
         </button>
       </div>
-
-      {/* 站点统计信息 */}
-      <div className="mt-4 mb-2 text-center pointer-events-auto">
-        <p className="text-[10px] font-medium opacity-40 dark:opacity-30 tracking-wider flex items-center justify-center gap-2" style={{ color: 'var(--foreground)' }}>
-          <span>👁️ 总访问量 {visitorCount?.toLocaleString() || '--'} 次</span>
-          <span className="opacity-20">|</span>
-          <span>🕒 已运行 {uptime}</span>
-        </p>
-      </div>
     </div>
-  );
+
+    {/* 站点统计信息 */}
+    <div className="mb-2 text-center pointer-events-auto">
+      <p className="text-[10px] font-medium opacity-40 dark:opacity-30 tracking-wider flex items-center justify-center gap-2" style={{ color: 'var(--foreground)' }}>
+        <span>👁️ 总访问量 {visitorCount?.toLocaleString() || '--'} 次</span>
+        <span className="opacity-20">|</span>
+        <span>🕒 已运行 {uptime}</span>
+      </p>
+    </div>
+  </div>
+);
 }
