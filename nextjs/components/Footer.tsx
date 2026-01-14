@@ -59,10 +59,8 @@ export default function Footer({ visitorCount }: FooterProps) {
           <div className="text-[10px] opacity-30 font-medium tracking-widest uppercase" style={{ color: 'var(--foreground)' }}>
             © 2026 StarGaze • Thai Stars Gallery
           </div>
-          <div className="flex items-center gap-4 text-[9px] opacity-20 font-medium tracking-tight" style={{ color: 'var(--foreground)' }}>
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer" className="hover:opacity-100 transition-opacity">
-              粤ICP备2024345155号
-            </a>
+          <div className="text-[9px] opacity-20 font-medium tracking-tight" style={{ color: 'var(--foreground)' }}>
+            Released under the <span className="font-bold">MIT License</span>
           </div>
         </div>
       </div>
