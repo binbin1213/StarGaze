@@ -6,9 +6,15 @@ export async function handleStats(request: Request, env: Env): Promise<Response>
 
   if (method === 'POST' && new URL(request.url).pathname === '/api/stats/visit') {
     // 增加访问量
-    await env.DB.prepare('UPDATE site_stats SET value = value + 1, updated_at = CURRENT_TIMESTAMP WHERE key = "visitor_count"').run();
+    const result = await env.DB.prepare('UPDATE site_stats SET value = value + 1, updated_at = CURRENT_TIMESTAMP WHERE key = "visitor_count"').run();
+    
+    // 如果没有更新到行（说明记录不存在），则插入新记录
+    if (result.meta.changes === 0) {
+      await env.DB.prepare('INSERT OR IGNORE INTO site_stats (key, value) VALUES ("visitor_count", 1)').run();
+    }
+    
     const visitorCount = await env.DB.prepare('SELECT value FROM site_stats WHERE key = "visitor_count"').first<{ value: number }>();
-    return jsonResponse({ visitorCount: visitorCount?.value || 0 });
+    return jsonResponse({ visitorCount: Number(visitorCount?.value || 0) });
   }
 
   if (method === 'GET') {
@@ -42,7 +48,13 @@ export async function handleStats(request: Request, env: Env): Promise<Response>
     const newThisMonth = await env.DB.prepare('SELECT COUNT(*) as total FROM photos WHERE created_at >= ?').bind(monthStartStr).first<{ total: number }>();
 
     // 6. 获取总访问量
-    const visitorCount = await env.DB.prepare('SELECT value FROM site_stats WHERE key = "visitor_count"').first<{ value: number }>();
+    let visitorCountResult = await env.DB.prepare('SELECT value FROM site_stats WHERE key = "visitor_count"').first<{ value: number }>();
+    
+    // 如果没有找到访问量记录，初始化一个
+    if (!visitorCountResult) {
+      await env.DB.prepare('INSERT OR IGNORE INTO site_stats (key, value) VALUES ("visitor_count", 0)').run();
+      visitorCountResult = { value: 0 };
+    }
 
     return jsonResponse({
       totalPhotos: photosCount?.total || 0,
@@ -50,7 +62,7 @@ export async function handleStats(request: Request, env: Env): Promise<Response>
       totalSchools: schoolsCount?.total || 0,
       averageAge: avgAgeResult?.averageAge || 0,
       newThisMonth: newThisMonth?.total || 0,
-      visitorCount: visitorCount?.value || 0
+      visitorCount: Number(visitorCountResult?.value || 0)
     }, 200, {
       'Cache-Control': 'public, max-age=60' // 统计数据更新频率较高，缓存时间缩短
     });
