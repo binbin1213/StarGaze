@@ -428,6 +428,7 @@ export default function StarDetailModal({ starId, onClose, isAdmin }: StarDetail
         {/* 顶部图片区域 */}
         <div className="relative h-[560px] w-full overflow-hidden">
           {mainPhoto ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img
               key={mainPhoto.id}
               src={`${getWorkerUrl()}/images/${mainPhoto.id}`}

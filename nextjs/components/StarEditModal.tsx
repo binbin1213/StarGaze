@@ -113,6 +113,7 @@ export default function StarEditModal({ isOpen, onClose, star, onSave }: StarEdi
               <div className="flex flex-col items-center gap-2">
                 <div className="relative group">
                   {formData.avatar ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       src={formData.avatar}
                       alt="Avatar"
